@@ -6,7 +6,9 @@ export interface AuthContextType {
   setUser: (user: User | null) => void;
   isLoading: boolean;
   logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
   isAuthenticated: boolean;
+  updateUserProfile?: (data: Partial<User>) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>(null!);

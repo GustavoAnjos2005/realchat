@@ -70,17 +70,27 @@ export class ChatService {
             const message = await prisma.message.create({
                 data: {
                     content,
-                    sender: {
-                        connect: { id: senderId }
-                    },
-                    receiver: {
-                        connect: { id: receiverId }
-                    },
+                    senderId,
+                    receiverId,
                     isAIMessage: senderId === this.AI_USER_ID
                 },
                 include: {
-                    sender: true,
-                    receiver: true
+                    sender: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            profileImage: true
+                        }
+                    },
+                    receiver: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            profileImage: true
+                        }
+                    }
                 }
             });
 
@@ -89,6 +99,60 @@ export class ChatService {
         } catch (error) {
             logger.error('Erro ao salvar mensagem:', error);
             throw new Error('Não foi possível salvar a mensagem');
+        }
+    }
+
+    async createFileMessage(data: {
+        senderId: string;
+        receiverId: string;
+        fileName: string;
+        fileUrl: string;
+        fileType: string;
+        fileSize: number;
+    }) {
+        try {
+            logger.info('Salvando mensagem com arquivo', { 
+                senderId: data.senderId, 
+                receiverId: data.receiverId,
+                fileName: data.fileName 
+            });
+            
+            const message = await prisma.message.create({
+                data: {
+                    content: `📎 ${data.fileName}`,
+                    senderId: data.senderId,
+                    receiverId: data.receiverId,
+                    fileName: data.fileName,
+                    fileUrl: data.fileUrl,
+                    fileType: data.fileType,
+                    fileSize: data.fileSize,
+                    isAIMessage: false
+                },
+                include: {
+                    sender: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            profileImage: true
+                        }
+                    },
+                    receiver: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            profileImage: true
+                        }
+                    }
+                }
+            });
+
+            logger.info('Mensagem com arquivo salva com sucesso', { messageId: message.id });
+            return message;
+        } catch (error) {
+            logger.error('Erro ao salvar mensagem com arquivo:', error);
+            throw new Error('Não foi possível salvar a mensagem com arquivo');
         }
     }
 
@@ -101,6 +165,18 @@ export class ChatService {
                         { senderId: userId1, receiverId: userId2 },
                         { senderId: userId2, receiverId: userId1 }
                     ]
+                },
+                select: {
+                    id: true,
+                    content: true,
+                    senderId: true,
+                    receiverId: true,
+                    fileName: true,
+                    fileUrl: true,
+                    fileType: true,
+                    fileSize: true,
+                    isAIMessage: true,
+                    createdAt: true
                 },
                 orderBy: { createdAt: 'desc' },
                 skip,
@@ -174,7 +250,7 @@ export class ChatService {
     // Métodos auxiliares
     async setUserOnlineStatus(userId: string, isOnline: boolean) {
         try {
-            // Primeiro verifica se o usuário existe
+            // Verifica se o usuário existe primeiro
             const user = await prisma.user.findUnique({
                 where: { id: userId }
             });
@@ -184,19 +260,24 @@ export class ChatService {
                 return;
             }
 
-            // Atualiza o status no Redis
+            // Verifica se o status realmente mudou
+            if (user.isOnline === isOnline) {
+                return; // Não faz nada se o status já está correto
+            }
+
+            // Atualiza o status no Redis primeiro
             await redisClient.set(`user:${userId}:online`, isOnline.toString());
             
-            // Atualiza o status no banco de dados
+            // Em seguida, atualiza no banco de dados
             await prisma.user.update({
                 where: { id: userId },
                 data: { isOnline }
             });
 
-            console.log(`Status online atualizado para ${userId}: ${isOnline}`);
+            logger.info(`Status online atualizado para ${userId}: ${isOnline}`);
         } catch (error) {
-            console.error('Erro ao atualizar status online:', error);
-            throw error;
+            logger.error('Erro ao atualizar status online:', error);
+            // Não joga erro para não quebrar o fluxo
         }
     }
 
@@ -206,10 +287,36 @@ export class ChatService {
     }
 
     async getOnlineUsers() {
-        return await prisma.user.findMany({
-            where: { isOnline: true },
-            select: { id: true, name: true, email: true }
-        });
+        try {
+            console.log('=== CHATSERVICE: getOnlineUsers chamado ===');
+            
+            // Retorna todos os usuários EXCETO o usuário IA (que será adicionado no frontend)
+            const users = await prisma.user.findMany({
+                where: {
+                    id: { not: this.AI_USER_ID } // Exclui o usuário IA da lista
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    isOnline: true,
+                    profileImage: true,
+                    themeColor: true,
+                    backgroundColor: true,
+                    backgroundImage: true
+                }
+            });
+            
+            console.log('=== CHATSERVICE: Usuários encontrados ===');
+            console.log('Total de usuários:', users.length);
+            console.log('Usuários:', users.map(u => ({ id: u.id, name: u.name, isOnline: u.isOnline })));
+            
+            return users;
+        } catch (error) {
+            console.error('=== CHATSERVICE: Erro no getOnlineUsers ===');
+            console.error('Erro:', error);
+            throw error;
+        }
     }
 
     getAIUserId() {

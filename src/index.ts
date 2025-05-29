@@ -1,43 +1,52 @@
 import express from 'express';
-import http from 'http';
+import { createServer } from 'http';
 import { Server } from 'socket.io';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import path from 'path';
 import authRoutes from './routes/auth';
-import { authMiddlewareSocket } from './middlewares/authMiddleware';
+import chatRoutes from './routes/chat';
 import setupChatSocket from './sockets/chatSocket';
-
-dotenv.config();
+import logger from './utils/logger';
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: ['http://localhost:5173'], // Especificando exatamente a origem permitida
-        methods: ['GET', 'POST'],
-        credentials: true
-    }
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
 });
 
-app.use(express.json());
+// Middlewares
 app.use(cors({
-    origin: 'http://localhost:5173', // Especificando exatamente a origem permitida
-    methods: ['GET', 'POST'],
-    credentials: true,
-    optionsSuccessStatus: 200 // Para compatibilidade com alguns navegadores
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
+  credentials: true
 }));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Servindo arquivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Rotas
 app.use('/api/auth', authRoutes);
+app.use('/api/chat', chatRoutes);
 
-// Socket.IO middleware de autenticação
-io.use(authMiddlewareSocket);
-
-// Configura socket chat
+// Configurar Socket.IO
 setupChatSocket(io);
+logger.info('Socket.IO configurado com sucesso');
+
+// Rota de teste simples
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Servidor funcionando!' });
+});
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+
+httpServer.listen(PORT, () => {
+  logger.info(`Servidor rodando na porta ${PORT}`);
 });
+
 

@@ -17,4 +17,11 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+// Função utilitária para construir URLs de imagens de perfil
+export const getProfileImageUrl = (profileImage?: string) => {
+    if (!profileImage) return '/default-avatar.svg';
+    if (profileImage.startsWith('http')) return profileImage;
+    return `http://localhost:3000${profileImage}`;
+};
+
 export default api;

@@ -1,0 +1,44 @@
+/* CallModal styles */
+.audio-bar-1 {
+  height: 8px;
+}
+
+.audio-bar-2 {
+  height: 20px;
+}
+
+.audio-bar-3 {
+  height: 24px;
+}
+
+.audio-bar-4 {
+  height: 20px;
+}
+
+.audio-bar-5 {
+  height: 8px;
+}
+
+.audio-bar-active-1 {
+  height: 8px;
+}
+
+.audio-bar-active-2 {
+  height: 20px;
+}
+
+.audio-bar-active-3 {
+  height: 24px;
+}
+
+.audio-bar-active-4 {
+  height: 20px;
+}
+
+.audio-bar-active-5 {
+  height: 8px;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}

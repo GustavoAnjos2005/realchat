@@ -5,6 +5,10 @@ export interface User {
     name: string;
     email: string;
     isOnline: boolean;
+    profileImage?: string;
+    themeColor?: string;
+    backgroundColor?: string;
+    backgroundImage?: string;
 }
 
 export interface Message {
@@ -13,7 +17,11 @@ export interface Message {
     senderId: string;
     receiverId: string;
     isAIMessage: boolean;
-    createdAt: string;
+    fileUrl?: string;
+    fileType?: string;
+    fileName?: string;
+    fileSize?: number;
+    createdAt: Date | string;
 }
 
 export type ChatSocket = typeof ClientSocket;

@@ -1,0 +1,886 @@
+.chat-container {
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #e5e7eb;
+}
+
+/* CORES DE FUNDO baseadas na propriedade backgroundColor do usuário */
+/* Cores de fundo para a sidebar - mais claras */
+.bg-white .sidebar { background-color: #fef7f7; }
+.bg-slate-200 .sidebar { background-color: rgba(239, 68, 68, 0.08); }
+.bg-slate-300 .sidebar { background-color: rgba(239, 68, 68, 0.12); }
+.bg-red-200 .sidebar { background-color: rgba(239, 68, 68, 0.08); }
+.bg-blue-200 .sidebar { background-color: rgba(239, 68, 68, 0.08); }
+.bg-green-200 .sidebar { background-color: rgba(220, 38, 38, 0.08); }
+.bg-purple-200 .sidebar { background-color: rgba(220, 38, 38, 0.08); }
+.bg-yellow-200 .sidebar { background-color: rgba(249, 115, 22, 0.08); }
+.bg-pink-200 .sidebar { background-color: rgba(236, 72, 153, 0.08); }
+.bg-indigo-200 .sidebar { background-color: rgba(220, 38, 38, 0.08); }
+.bg-orange-200 .sidebar { background-color: rgba(249, 115, 22, 0.08); }
+.bg-teal-200 .sidebar { background-color: rgba(239, 68, 68, 0.08); }
+
+/* Cores de fundo para a área do chat - mais claras */
+.bg-white .chat-area { background-color: #ffffff; }
+.bg-slate-200 .chat-area { background-color: rgba(239, 68, 68, 0.04); }
+.bg-slate-300 .chat-area { background-color: rgba(239, 68, 68, 0.06); }
+.bg-red-200 .chat-area { background-color: rgba(239, 68, 68, 0.04); }
+.bg-blue-200 .chat-area { background-color: rgba(239, 68, 68, 0.04); }
+.bg-green-200 .chat-area { background-color: rgba(220, 38, 38, 0.04); }
+.bg-purple-200 .chat-area { background-color: rgba(220, 38, 38, 0.04); }
+.bg-yellow-200 .chat-area { background-color: rgba(249, 115, 22, 0.04); }
+.bg-pink-200 .chat-area { background-color: rgba(236, 72, 153, 0.04); }
+.bg-indigo-200 .chat-area { background-color: rgba(220, 38, 38, 0.04); }
+.bg-orange-200 .chat-area { background-color: rgba(249, 115, 22, 0.04); }
+.bg-teal-200 .chat-area { background-color: rgba(239, 68, 68, 0.04); }
+
+/* Cores de fundo para a área de mensagens - ainda mais claras */
+.bg-white .messages-container { background-color: #f8fafc !important; }
+.bg-slate-200 .messages-container { background-color: rgba(148, 163, 184, 0.02) !important; }
+.bg-slate-300 .messages-container { background-color: rgba(148, 163, 184, 0.03) !important; }
+.bg-red-200 .messages-container { background-color: rgba(239, 68, 68, 0.02) !important; }
+.bg-blue-200 .messages-container { background-color: rgba(59, 130, 246, 0.02) !important; }
+.bg-green-200 .messages-container { background-color: rgba(34, 197, 94, 0.02) !important; }
+.bg-purple-200 .messages-container { background-color: rgba(168, 85, 247, 0.02) !important; }
+.bg-yellow-200 .messages-container { background-color: rgba(245, 158, 11, 0.02) !important; }
+.bg-pink-200 .messages-container { background-color: rgba(236, 72, 153, 0.02) !important; }
+.bg-indigo-200 .messages-container { background-color: rgba(99, 102, 241, 0.02) !important; }
+.bg-orange-200 .messages-container { background-color: rgba(249, 115, 22, 0.02) !important; }
+.bg-teal-200 .messages-container { background-color: rgba(20, 184, 166, 0.02) !important; }
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+}
+
+.chat-header {
+  height: 64px;
+  padding: 0 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  background-color: white;
+}
+
+.message-form {
+  padding: 1rem;
+  border-top: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+/* CORES DO TEMA baseadas na propriedade themeColor do usuário */
+/* Cores do tema para o input */
+.theme-dc2626 .message-input:focus { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
+.theme-2563eb .message-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+.theme-16a34a .message-input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1); }
+.theme-9333ea .message-input:focus { border-color: #9333ea; box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1); }
+.theme-ea580c .message-input:focus { border-color: #ea580c; box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1); }
+.theme-0d9488 .message-input:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1); }
+.theme-be185d .message-input:focus { border-color: #be185d; box-shadow: 0 0 0 3px rgba(190, 24, 93, 0.1); }
+.theme-4f46e5 .message-input:focus { border-color: #4f46e5; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+.theme-d97706 .message-input:focus { border-color: #d97706; box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.1); }
+.theme-1e293b .message-input:focus { border-color: #1e293b; box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1); }
+.theme-059669 .message-input:focus { border-color: #059669; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
+.theme-7c2d12 .message-input:focus { border-color: #7c2d12; box-shadow: 0 0 0 3px rgba(124, 45, 18, 0.1); }
+
+/* Cores dos temas para as mensagens enviadas */
+.theme-dc2626 .message-bubble-sent { background-color: #dc2626; color: white !important; }
+.theme-2563eb .message-bubble-sent { background-color: #2563eb; color: white !important; }
+.theme-16a34a .message-bubble-sent { background-color: #16a34a; color: white !important; }
+.theme-9333ea .message-bubble-sent { background-color: #9333ea; color: white !important; }
+.theme-ea580c .message-bubble-sent { background-color: #ea580c; color: white !important; }
+.theme-0d9488 .message-bubble-sent { background-color: #0d9488; color: white !important; }
+.theme-be185d .message-bubble-sent { background-color: #be185d; color: white !important; }
+.theme-4f46e5 .message-bubble-sent { background-color: #4f46e5; color: white !important; }
+.theme-d97706 .message-bubble-sent { background-color: #d97706; color: white !important; }
+.theme-1e293b .message-bubble-sent { background-color: #1e293b; color: white !important; }
+.theme-059669 .message-bubble-sent { background-color: #059669; color: white !important; }
+.theme-7c2d12 .message-bubble-sent { background-color: #7c2d12; color: white !important; }
+
+/* Cores dos botões de envio para cada tema */
+.theme-dc2626 .send-button { background-color: #dc2626; }
+.theme-2563eb .send-button { background-color: #2563eb; }
+.theme-16a34a .send-button { background-color: #16a34a; }
+.theme-9333ea .send-button { background-color: #9333ea; }
+.theme-ea580c .send-button { background-color: #ea580c; }
+.theme-0d9488 .send-button { background-color: #0d9488; }
+.theme-be185d .send-button { background-color: #be185d; }
+.theme-4f46e5 .send-button { background-color: #4f46e5; }
+.theme-d97706 .send-button { background-color: #d97706; }
+.theme-1e293b .send-button { background-color: #1e293b; }
+.theme-059669 .send-button { background-color: #059669; }
+.theme-7c2d12 .send-button { background-color: #7c2d12; }
+
+/* Hover dos botões */
+.theme-dc2626 .send-button:hover { background-color: #b91c1c; }
+.theme-2563eb .send-button:hover { background-color: #1d4ed8; }
+.theme-16a34a .send-button:hover { background-color: #15803d; }
+.theme-9333ea .send-button:hover { background-color: #7c3aed; }
+.theme-ea580c .send-button:hover { background-color: #c2410c; }
+.theme-0d9488 .send-button:hover { background-color: #0f766e; }
+.theme-be185d .send-button:hover { background-color: #9d174d; }
+.theme-4f46e5 .send-button:hover { background-color: #4338ca; }
+.theme-d97706 .send-button:hover { background-color: #b45309; }
+.theme-1e293b .send-button:hover { background-color: #334155; }
+.theme-059669 .send-button:hover { background-color: #047857; }
+.theme-7c2d12 .send-button:hover { background-color: #9a3412; }
+
+/* Estilos específicos para o chat */
+
+/* Bolhas de mensagem do chatbot IA */
+.message-bubble-ai {
+  background: linear-gradient(to right, #8b5cf6, #a855f7);
+  color: white;
+}
+
+/* Aplicar cores do tema aos botões de envio - já definido acima, removendo duplicatas */
+
+/* Bolhas de mensagem enviadas pelo usuário - aplicar tema */
+.message-bubble-sent {
+  color: white;
+}
+
+/* Bolhas de mensagem recebidas - cor mais adequada */
+.message-bubble-received {
+  background-color: #6b7280 !important;
+  color: white !important;
+  border: 1px solid #4b5563;
+}
+
+.message-bubble-received p,
+.message-bubble-received span {
+  color: white !important;
+}
+
+/* Garantir que as mensagens recebidas (do outro usuário) têm bom contraste */
+.message-bubble-received {
+  background-color: #f3f4f6;
+  color: #1f2937 !important;
+}
+
+/* Cores de fundo do chat container */
+.chat-container.bg-white { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important; }
+.chat-container.bg-slate-200 { background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important; }
+.chat-container.bg-slate-300 { background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%) !important; }
+.chat-container.bg-red-200 { background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%) !important; }
+.chat-container.bg-blue-200 { background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%) !important; }
+.chat-container.bg-green-200 { background: linear-gradient(135deg, #bbf7d0 0%, #86efac 100%) !important; }
+.chat-container.bg-purple-200 { background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%) !important; }
+.chat-container.bg-yellow-200 { background: linear-gradient(135deg, #fef08a 0%, #fde047 100%) !important; }
+.chat-container.bg-pink-200 { background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%) !important; }
+.chat-container.bg-indigo-200 { background: linear-gradient(135deg, #c7d2fe 0%, #a5b4fc 100%) !important; }
+.chat-container.bg-orange-200 { background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%) !important; }
+.chat-container.bg-teal-200 { background: linear-gradient(135deg, #99f6e4 0%, #5eead4 100%) !important; }
+
+/* Animações para mensagens */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Delays para animação das mensagens */
+.message-delay-0 { animation-delay: 0ms; }
+.message-delay-1 { animation-delay: 50ms; }
+.message-delay-2 { animation-delay: 100ms; }
+.message-delay-3 { animation-delay: 150ms; }
+.message-delay-4 { animation-delay: 200ms; }
+.message-delay-5 { animation-delay: 250ms; }
+.message-delay-6 { animation-delay: 300ms; }
+.message-delay-7 { animation-delay: 350ms; }
+.message-delay-8 { animation-delay: 400ms; }
+.message-delay-9 { animation-delay: 450ms; }
+
+/* Animação de digitação */
+.typing-dot-delay-1 { animation-delay: 0s; }
+.typing-dot-delay-2 { animation-delay: 0.1s; }
+.typing-dot-delay-3 { animation-delay: 0.2s; }
+
+/* Hover effects */
+.message-bubble-sent:hover,
+.message-bubble-received:hover,
+.message-bubble-ai:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: scale(1.02);
+}
+
+/* Focus styles para textarea */
+.message-textarea:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Modern Chat Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+/* Backdrop blur effects */
+.backdrop-blur-xl {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Enhanced hover effects */
+.hover\:scale-\[1\.02\]:hover {
+  transform: scale(1.02);
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+/* Smooth transitions for all interactive elements */
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom scrollbar for modern look */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced message bubble styles */
+.message-bubble-sent {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}
+
+.message-bubble-ai {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+
+.message-bubble-received {
+  background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Pulse animation for online status */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Glass morphism effects */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Focus ring para acessibilidade */
+.focus\:ring-2:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Textarea auto-resize styling */
+textarea {
+  resize: none;
+  transition: height 0.2s ease;
+}
+
+/* Enhanced button states */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button:disabled:hover {
+  transform: none !important;
+}
+
+/* Custom shadow effects */
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Gradient backgrounds */
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.bg-gradient-to-b {
+  background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
+}
+
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Bounce animation for typing indicator */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* Staggered animation delays */
+.message-delay-0 { animation-delay: 0ms; }
+.message-delay-1 { animation-delay: 100ms; }
+.message-delay-2 { animation-delay: 200ms; }
+.message-delay-3 { animation-delay: 300ms; }
+.message-delay-4 { animation-delay: 400ms; }
+.message-delay-5 { animation-delay: 500ms; }
+.message-delay-6 { animation-delay: 600ms; }
+.message-delay-7 { animation-delay: 700ms; }
+.message-delay-8 { animation-delay: 800ms; }
+.message-delay-9 { animation-delay: 900ms; }
+
+/* Modern gradient text */
+.text-gradient {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Enhanced border styles */
+.border-white\/20 {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Background opacity utilities */
+.bg-white\/80 {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.bg-white\/90 {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.bg-white\/50 {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-white\/20 {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Text opacity utilities */
+.text-white\/70 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.text-white\/80 {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Garantir que o texto das mensagens seja branco em TODAS as mensagens */
+.message-bubble-sent {
+  color: white !important;
+}
+
+.message-bubble-sent p,
+.message-bubble-sent span {
+  color: white !important;
+}
+
+/* NOVO: Texto branco para mensagens recebidas e IA */
+.message-bubble-received {
+  background-color: #6b7280 !important;
+  color: white !important;
+}
+
+.message-bubble-received p,
+.message-bubble-received span {
+  color: white !important;
+}
+
+.message-bubble-ai {
+  background-color: #7c3aed;
+  color: white !important;
+}
+
+.message-bubble-ai p,
+.message-bubble-ai span {
+  color: white !important;
+}
+
+/* Garantir que o label do assistente IA permaneça visível */
+.message-bubble-ai .text-purple-600 {
+  color: #e9d5ff !important;
+}
+
+/* Estilos para indicadores de digitação */
+.typing-dot-delay-1 { animation-delay: 0s; }
+.typing-dot-delay-2 { animation-delay: 0.2s; }
+.typing-dot-delay-3 { animation-delay: 0.4s; }
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  .chat-container {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
+  }
+
+  /* Garantir que o header mobile não sobreponha o conteúdo */
+  .mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    height: 64px;
+  }
+
+  /* Ajustar área de mensagens para mobile */
+  .messages-area-mobile {
+    padding-top: 64px; /* Espaço para o header mobile */
+    padding-bottom: 80px; /* Espaço para o form de envio */
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+  }
+
+  /* Form de envio fixo no mobile */
+  .message-form-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    background: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  /* Sidebar mobile overlay */
+  .mobile-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 85vw;
+    max-width: 320px;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .mobile-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Overlay para fechar sidebar */
+  .mobile-sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 55;
+  }
+
+  /* Ajustar tamanho de elementos para toque */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Melhorar legibilidade no mobile */
+  .message-bubble-sent,
+  .message-bubble-received,
+  .message-bubble-ai {
+    max-width: 85%;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  /* Ajustar espaçamento entre mensagens */
+  .message-spacing {
+    margin-bottom: 12px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar {
+    width: 280px;
+  }
+  
+  .message-bubble-sent,
+  .message-bubble-received,
+  .message-bubble-ai {
+    max-width: 70%;
+  }
+}
+
+/* Desktop optimizations */
+@media (min-width: 1024px) {
+  .sidebar {
+    width: 320px;
+  }
+  
+  .message-bubble-sent,
+  .message-bubble-received,
+  .message-bubble-ai {
+    max-width: 60%;
+  }
+}
+
+/* Emoji selector mobile optimizations */
+@media (max-width: 767px) {
+  .emoji-selector-mobile {
+    position: fixed !important;
+    bottom: 16px !important;
+    left: 16px !important;
+    right: 16px !important;
+    top: auto !important;
+    transform: none !important;
+    max-width: none !important;
+    width: auto !important;
+  }
+}
+
+/* Garantir que elementos interativos tenham tamanho adequado para toque */
+.interactive-element {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Smooth scrolling para toda a aplicação */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevenir zoom em inputs no iOS */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+}
+
+/* Safe area para dispositivos com notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .mobile-header {
+    padding-top: env(safe-area-inset-top);
+    height: calc(64px + env(safe-area-inset-top));
+  }
+  
+  .messages-area-mobile {
+    padding-top: calc(64px + env(safe-area-inset-top));
+  }
+  
+  .message-form-mobile {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Melhorar performance de animações */
+.gpu-acceleration {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Otimizações para telas de alta densidade */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .message-bubble-sent,
+  .message-bubble-received,
+  .message-bubble-ai {
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Backdrop filter com fallback para Safari */
+.backdrop-blur {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+/* Botão de envio padrão */
+.send-button {
+  background: linear-gradient(to right, #8b5cf6, #7c3aed);
+  color: white;
+}
+
+/* Temas para botão de envio */
+.theme-dc2626 .send-button { 
+  background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+.theme-dc2626 .send-button:hover { 
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+}
+
+.theme-2563eb .send-button { 
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+}
+
+.theme-2563eb .send-button:hover { 
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+}
+
+.theme-16a34a .send-button { 
+  background: linear-gradient(to right, #22c55e, #16a34a);
+}
+
+.theme-16a34a .send-button:hover { 
+  background: linear-gradient(to right, #16a34a, #15803d);
+}
+
+.theme-9333ea .send-button { 
+  background: linear-gradient(to right, #a855f7, #9333ea);
+}
+
+.theme-9333ea .send-button:hover { 
+  background: linear-gradient(to right, #9333ea, #7c3aed);
+}
+
+.theme-ea580c .send-button { 
+  background: linear-gradient(to right, #f97316, #ea580c);
+}
+
+.theme-ea580c .send-button:hover { 
+  background: linear-gradient(to right, #ea580c, #dc2626);
+}
+
+.theme-0d9488 .send-button { 
+  background: linear-gradient(to right, #14b8a6, #0d9488);
+}
+
+.theme-0d9488 .send-button:hover { 
+  background: linear-gradient(to right, #0d9488, #0f766e);
+}
+
+.theme-be185d .send-button { 
+  background: linear-gradient(to right, #ec4899, #be185d);
+}
+
+.theme-be185d .send-button:hover { 
+  background: linear-gradient(to right, #be185d, #9d174d);
+}
+
+.theme-4f46e5 .send-button { 
+  background: linear-gradient(to right, #6366f1, #4f46e5);
+}
+
+.theme-4f46e5 .send-button:hover { 
+  background: linear-gradient(to right, #4f46e5, #4338ca);
+}
+
+.theme-d97706 .send-button { 
+  background: linear-gradient(to right, #f59e0b, #d97706);
+}
+
+.theme-d97706 .send-button:hover { 
+  background: linear-gradient(to right, #d97706, #b45309);
+}
+
+.theme-1e293b .send-button { 
+  background: linear-gradient(to right, #64748b, #475569);
+}
+
+.theme-1e293b .send-button:hover { 
+  background: linear-gradient(to right, #475569, #334155);
+}
+
+/* Bubble de mensagem enviada */
+.message-bubble-sent {
+  color: white;
+}
+
+.theme-dc2626 .message-bubble-sent { 
+  background: linear-gradient(to right, #ef4444, #dc2626);
+}
+
+.theme-2563eb .message-bubble-sent { 
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+}
+
+.theme-16a34a .message-bubble-sent { 
+  background: linear-gradient(to right, #22c55e, #16a34a);
+}
+
+.theme-9333ea .message-bubble-sent { 
+  background: linear-gradient(to right, #a855f7, #9333ea);
+}
+
+.theme-ea580c .message-bubble-sent { 
+  background: linear-gradient(to right, #f97316, #ea580c);
+}
+
+.theme-0d9488 .message-bubble-sent { 
+  background: linear-gradient(to right, #14b8a6, #0d9488);
+}
+
+.theme-be185d .message-bubble-sent { 
+  background: linear-gradient(to right, #ec4899, #be185d);
+}
+
+.theme-4f46e5 .message-bubble-sent { 
+  background: linear-gradient(to right, #6366f1, #4f46e5);
+}
+
+.theme-d97706 .message-bubble-sent { 
+  background: linear-gradient(to right, #f59e0b, #d97706);
+}
+
+.theme-1e293b .message-bubble-sent { 
+  background: linear-gradient(to right, #64748b, #475569);
+}
+
+/* Bubble de mensagem recebida */
+.message-bubble-received {
+  background-color: #6b7280 !important;
+  color: white !important;
+  border: 1px solid #4b5563;
+}
+
+/* Estilos para glassmorphism */
+.glass-effect {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Focus ring para textarea */
+.message-textarea {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.message-textarea:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.theme-dc2626 .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #ef4444;
+}
+
+.theme-2563eb .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.theme-16a34a .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #22c55e;
+}
+
+.theme-9333ea .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #a855f7;
+}
+
+.theme-ea580c .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #f97316;
+}
+
+.theme-0d9488 .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #14b8a6;
+}
+
+.theme-be185d .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #ec4899;
+}
+
+.theme-4f46e5 .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #6366f1;
+}
+
+.theme-d97706 .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+.theme-1e293b .message-textarea:focus { 
+  box-shadow: 0 0 0 2px #64748b;
+}

@@ -1,6 +1,6 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 generator client {
@@ -8,15 +8,19 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  password  String
-  name      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  sentMessages     Message[] @relation("SentMessages")
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String
+  name            String
+  profileImage    String?   // URL da imagem de perfil
+  themeColor      String    @default("dc2626") // Cor tema padrão (primary-600)
+  backgroundColor String?   // Cor de fundo do chat
+  backgroundImage String?   // URL da imagem de fundo
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  sentMessages    Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
-  isOnline  Boolean   @default(false)
+  isOnline        Boolean   @default(false)
 }
 
 model Message {
@@ -25,6 +29,10 @@ model Message {
   senderId    String
   receiverId  String
   isAIMessage Boolean  @default(false)
+  fileUrl     String?  // URL do arquivo anexado
+  fileType    String?  // Tipo do arquivo (image, document)
+  fileName    String?  // Nome original do arquivo
+  fileSize    Int?     // Tamanho do arquivo em bytes
   createdAt   DateTime @default(now())
   sender      User     @relation("SentMessages", fields: [senderId], references: [id])
   receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])

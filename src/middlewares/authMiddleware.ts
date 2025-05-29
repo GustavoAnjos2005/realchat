@@ -28,12 +28,13 @@ export const authLimiter = rateLimit({
     message: 'Muitas tentativas de login, por favor tente novamente após 1 hora'
 });
 
-export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         
         if (!token) {
-            return res.status(401).json({ message: 'Token não fornecido' });
+            res.status(401).json({ message: 'Token não fornecido' });
+            return;
         }
 
         const decoded = await authService.validateToken(token);
@@ -49,7 +50,12 @@ export const authMiddlewareSocket = async (
     next: (err?: ExtendedError | undefined) => void
 ) => {
     try {
-        const token = socket.handshake.auth.token;
+        let token = socket.handshake.auth.token;
+        
+        // Verifica se o token está no formato Bearer
+        if (token?.startsWith('Bearer ')) {
+            token = token.split(' ')[1];
+        }
         
         if (!token) {
             return next(new Error('Token não fornecido'));
