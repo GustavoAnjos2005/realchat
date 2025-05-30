@@ -22,7 +22,7 @@ export default function Home() {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 sm:mb-8 bg-gradient-to-r from-white via-red-200 to-white bg-clip-text text-transparent leading-tight">
-              Chat Inteligente
+              Chat Real-Time
               <span className="block text-red-300">em Tempo Real</span>
             </h1>
             
