@@ -10,16 +10,26 @@ import logger from './utils/logger';
 
 const app = express();
 const httpServer = createServer(app);
+
+// Configuração de CORS para produção
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+  process.env.FRONTEND_URL || ''
+].filter(Boolean);
+
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
 // Middlewares
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigins,
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
   credentials: true
 }));
@@ -48,5 +58,8 @@ const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
   logger.info(`Servidor rodando na porta ${PORT}`);
 });
+
+// Para produção no Vercel, exportar o app
+export default app;
 
 

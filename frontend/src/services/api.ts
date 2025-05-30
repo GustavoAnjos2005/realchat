@@ -1,7 +1,18 @@
 import axios from 'axios';
 
+// Configuração da URL base baseada no ambiente
+const getBaseURL = () => {
+    if (typeof window !== 'undefined') {
+        // No browser, usar URL relativa para produção ou localhost para desenvolvimento
+        return window.location.hostname === 'localhost' 
+            ? 'http://localhost:3000'
+            : `${window.location.protocol}//${window.location.host}`;
+    }
+    return 'http://localhost:3000';
+};
+
 const api = axios.create({
-    baseURL: 'http://localhost:3000',
+    baseURL: getBaseURL(),
     headers: {
         'Content-Type': 'application/json'
     },
@@ -21,7 +32,8 @@ api.interceptors.request.use((config) => {
 export const getProfileImageUrl = (profileImage?: string) => {
     if (!profileImage) return '/default-avatar.svg';
     if (profileImage.startsWith('http')) return profileImage;
-    return `http://localhost:3000${profileImage}`;
+    const baseURL = getBaseURL();
+    return `${baseURL}${profileImage}`;
 };
 
 export default api;
