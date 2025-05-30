@@ -153,7 +153,7 @@ const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
             aria-label="Fechar configurações"
             title="Fechar configurações"
           >
-            <FiX size={20} style={{ color: '#6B7280' }} />
+            <FiX size={20} className="text-gray-500" />
           </button>
         </div>
 
@@ -177,7 +177,7 @@ const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                     }}
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <FiCamera size={20} style={{ color: 'white' }} />
+                    <FiCamera size={20} className="text-white" />
                   </div>
                 </div>
                 <button
@@ -186,7 +186,7 @@ const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                   title="Alterar foto do perfil"
                   aria-label="Alterar foto do perfil"
                 >
-                  <FiCamera size={12} style={{ color: 'white' }} />
+                  <FiCamera size={12} className="text-white" />
                 </button>
               </div>
               <span className="text-xs sm:text-sm text-gray-600 text-center">Clique para alterar foto</span>

@@ -15,4 +15,18 @@ export default defineConfig({
   optimizeDeps: {
     include: ['buffer'],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['@headlessui/react', '@heroicons/react', 'lucide-react'],
+          socket: ['socket.io-client'],
+          utils: ['axios', 'react-toastify']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  }
 })

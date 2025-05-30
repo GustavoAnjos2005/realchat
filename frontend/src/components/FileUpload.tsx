@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Upload, X, File, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'react-toastify';
 
