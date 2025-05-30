@@ -13,16 +13,6 @@ export interface CallUser {
   profileImage?: string;
 }
 
-// Configuração da URL do Socket baseada no ambiente
-const getSocketURL = (): string => {
-  if (typeof window !== 'undefined') {
-    return window.location.hostname === 'localhost' 
-      ? 'http://localhost:3000'
-      : `${window.location.protocol}//${window.location.host}`;
-  }
-  return 'http://localhost:3000';
-};
-
 export class WebRTCService {
   private socket: Socket | null = null;
   private peerConnection: RTCPeerConnection | null = null;
