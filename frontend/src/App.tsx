@@ -56,6 +56,7 @@ function AppContent() {
         pauseOnHover
         theme="light"
         className="toast-container"
+        aria-label="Notificações"
       />
     </>
   );

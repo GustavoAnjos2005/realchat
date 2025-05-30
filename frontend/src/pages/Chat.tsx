@@ -64,7 +64,7 @@ export default function Chat() {
     console.log('3. Usuário no localStorage:', localStorage.getItem('user'));
 
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) return undefined;
 
     console.log('Iniciando conexão socket...');
     socketRef.current = socketIOClient('http://localhost:3000', {
@@ -158,11 +158,11 @@ export default function Chat() {
       }
       socketRef.current?.disconnect();
     };
-  }, [user.id]); // ✅ CORRIGIDO: Removido selectedUser?.id
+  }, [user.id]);
 
   // useEffect separado para eventos de typing
   useEffect(() => {
-    if (!socketRef.current) return;
+    if (!socketRef.current) return undefined;
 
     const handleUserTyping = ({ userId, isTyping: typing }: { userId: string; isTyping: boolean }) => {
       if (selectedUser?.id === userId) {
