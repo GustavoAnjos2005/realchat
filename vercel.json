@@ -4,19 +4,19 @@
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install",
   "functions": {
-    "api/*.ts": {
-      "runtime": "nodejs18.x"
+    "api/index.ts": {
+      "runtime": "@vercel/node@3.0.0"
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "destination": "/api/index.ts"
     }
   ],
   "redirects": [
     {
-      "source": "/((?!api|_next|_static|favicon.ico).*)",
+      "source": "/((?!api|_next|_static|favicon.ico|assets).*)",
       "destination": "/",
       "permanent": false
     }
