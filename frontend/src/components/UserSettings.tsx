@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { getProfileImageUrl } from '../services/api';
-import { FiX, FiCamera } from 'react-icons/fi';
 import './UserSettings.css';
 
 const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
@@ -153,7 +152,9 @@ const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
             aria-label="Fechar configurações"
             title="Fechar configurações"
           >
-            <FiX size={20} className="text-gray-500" />
+            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
@@ -177,7 +178,10 @@ const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                     }}
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <FiCamera size={20} className="text-white" />
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
                   </div>
                 </div>
                 <button
@@ -186,7 +190,10 @@ const UserSettings: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOp
                   title="Alterar foto do perfil"
                   aria-label="Alterar foto do perfil"
                 >
-                  <FiCamera size={12} className="text-white" />
+                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
                 </button>
               </div>
               <span className="text-xs sm:text-sm text-gray-600 text-center">Clique para alterar foto</span>
