@@ -8,8 +8,8 @@
     "start": "node dist/index.js",
     "build": "tsc",
     "build:backend": "tsc",
-    "build:frontend": "cd frontend && npm ci && npm run build",
-    "vercel-build": "cd frontend && npm ci && npm run build"
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "vercel-build": "cd frontend && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
