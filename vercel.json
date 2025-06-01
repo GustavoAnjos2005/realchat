@@ -2,11 +2,5 @@
   "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "installCommand": "cd frontend && npm install",
-  "framework": null,
-  "functions": {
-    "api/index.ts": {
-      "runtime": "@vercel/node"
-    }
-  }
+  "installCommand": "cd frontend && npm install"
 }
