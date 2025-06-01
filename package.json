@@ -6,10 +6,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node src/index.ts",
     "start": "node dist/index.js",
-    "build": "npm run build:backend && npm run build:frontend",
+    "build": "tsc",
     "build:backend": "tsc",
     "build:frontend": "cd frontend && npm ci && npm run build",
-    "vercel-build": "tsc && cd frontend && npm ci && npm run build"
+    "vercel-build": "cd frontend && npm ci && npm run build"
   },
   "keywords": [],
   "author": "",
