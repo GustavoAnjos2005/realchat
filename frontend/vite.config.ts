@@ -16,7 +16,10 @@ export default defineConfig({
     include: ['buffer'],
   },
   build: {
+    target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
+      external: [],
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
@@ -27,6 +30,12 @@ export default defineConfig({
         }
       }
     },
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000,
+    commonjsOptions: {
+      include: [/node_modules/]
+    }
+  },
+  esbuild: {
+    target: 'esnext'
   }
 })
