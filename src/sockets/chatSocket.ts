@@ -87,7 +87,7 @@ export default function setupChatSocket(io: Server) {
                 const users = await chatService.getOnlineUsers();
                 console.log('=== DADOS RETORNADOS PELO CHATSERVICE ===');
                 console.log('Número de usuários encontrados:', users.length);
-                console.log('Usuários:', users.map(u => ({ id: u.id, name: u.name, isOnline: u.isOnline })));
+                console.log('Usuários:', users.map((user: any) => ({ id: user.id, name: user.name, isOnline: user.isOnline })));
                 
                 console.log('=== ENVIANDO RESPOSTA PARA O CLIENTE ===');
                 socket.emit('onlineUsers', users);

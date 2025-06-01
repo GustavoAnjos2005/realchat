@@ -309,7 +309,7 @@ export class ChatService {
             
             console.log('=== CHATSERVICE: Usuários encontrados ===');
             console.log('Total de usuários:', users.length);
-            console.log('Usuários:', users.map(u => ({ id: u.id, name: u.name, isOnline: u.isOnline })));
+            console.log('Usuários:', users.map((user: any) => ({ id: user.id, name: user.name, isOnline: user.isOnline })));
             
             return users;
         } catch (error) {
