@@ -98,6 +98,31 @@
 .theme-059669 .message-input:focus { border-color: #059669; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1); }
 .theme-7c2d12 .message-input:focus { border-color: #7c2d12; box-shadow: 0 0 0 3px rgba(124, 45, 18, 0.1); }
 
+/* CORREÇÃO: Garantir que o texto do textarea seja sempre preto e visível */
+.message-textarea {
+  color: #1f2937 !important; /* Cinza escuro para boa legibilidade */
+}
+
+.message-textarea::placeholder {
+  color: #6b7280 !important; /* Cinza médio para o placeholder */
+}
+
+/* Garantir que o texto seja visível em todos os temas */
+.theme-dc2626 .message-textarea,
+.theme-2563eb .message-textarea,
+.theme-16a34a .message-textarea,
+.theme-9333ea .message-textarea,
+.theme-ea580c .message-textarea,
+.theme-0d9488 .message-textarea,
+.theme-be185d .message-textarea,
+.theme-4f46e5 .message-textarea,
+.theme-d97706 .message-textarea,
+.theme-1e293b .message-textarea,
+.theme-059669 .message-textarea,
+.theme-7c2d12 .message-textarea {
+  color: #1f2937 !important; /* Força o texto preto em todos os temas */
+}
+
 /* Cores dos temas para as mensagens enviadas */
 .theme-dc2626 .message-bubble-sent { background-color: #dc2626; color: white !important; }
 .theme-2563eb .message-bubble-sent { background-color: #2563eb; color: white !important; }
@@ -831,7 +856,7 @@ html {
 
 /* Estilos para glassmorphism */
 .glass-effect {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.25);
 }
 
 /* Focus ring para textarea */

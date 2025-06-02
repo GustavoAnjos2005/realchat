@@ -4,18 +4,94 @@ import { createClient } from 'redis';
 import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
-const redisClient = createClient({
-    url: process.env.REDIS_URL
-});
 
-redisClient.on('error', (err) => console.error('Erro Redis:', err));
-redisClient.on('connect', () => console.log('Conectado ao Redis'));
+// Configuração melhorada para Upstash Redis com fallback
+let redisClient: any = null;
+let redisConnected = false;
+let redisInitialized = false;
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 3;
 
-// Conecta ao Redis
-redisClient.connect().catch(console.error);
+const initializeRedis = async () => {
+    if (redisInitialized) return; // Evita múltiplas inicializações
+    redisInitialized = true;
+
+    try {
+        if (!process.env.REDIS_URL) {
+            console.log('⚠️ REDIS_URL não configurada, continuando sem cache Redis');
+            return;
+        }
+
+        console.log('🔄 Inicializando Redis...');
+        redisClient = createClient({
+            url: process.env.REDIS_URL,
+            socket: {
+                reconnectStrategy: false // Desabilita reconexão automática
+            }
+        });
+
+        redisClient.on('error', (err: Error) => {
+            redisConnected = false;
+            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                console.log(`⚠️ Redis erro (tentativa ${reconnectAttempts + 1}/${MAX_RECONNECT_ATTEMPTS}):`, err.message);
+                reconnectAttempts++;
+            }
+            // Não tenta reconectar automaticamente
+        });
+
+        redisClient.on('connect', () => {
+            redisConnected = true;
+            reconnectAttempts = 0; // Reset counter on successful connection
+            console.log('✅ Redis conectado com sucesso');
+        });
+
+        redisClient.on('end', () => {
+            redisConnected = false;
+            console.log('🔌 Redis desconectado');
+        });
+
+        // Tentativa única de conexão com timeout
+        const connectPromise = redisClient.connect();
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout na conexão Redis')), 5000);
+        });
+
+        await Promise.race([connectPromise, timeoutPromise]);
+        
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+        console.log('⚠️ Redis não disponível, aplicação continuará sem cache:', errorMessage);
+        redisClient = null;
+        redisConnected = false;
+    }
+};
+
+// Funções auxiliares para Redis com fallback seguro
+const setRedisValue = async (key: string, value: string): Promise<boolean> => {
+    if (!redisClient || !redisConnected) return false;
+    try {
+        await redisClient.set(key, value);
+        return true;
+    } catch (error: unknown) {
+        redisConnected = false; // Marca como desconectado em caso de erro
+        return false;
+    }
+};
+
+const getRedisValue = async (key: string): Promise<string | null> => {
+    if (!redisClient || !redisConnected) return null;
+    try {
+        return await redisClient.get(key);
+    } catch (error: unknown) {
+        redisConnected = false; // Marca como desconectado em caso de erro
+        return null;
+    }
+};
+
+// Inicializar Redis
+initializeRedis();
 
 // Inicializa o cliente do Hugging Face
-// Você pode gerar um token gratuito em https://huggingface.co/settings/tokens
 const hf = new HfInference(process.env.HUGGINGFACE_TOKEN);
 
 export class ChatService {
@@ -265,8 +341,8 @@ export class ChatService {
                 return; // Não faz nada se o status já está correto
             }
 
-            // Atualiza o status no Redis primeiro
-            await redisClient.set(`user:${userId}:online`, isOnline.toString());
+            // Tenta atualizar o status no Redis primeiro
+            await setRedisValue(`user:${userId}:online`, isOnline.toString());
             
             // Em seguida, atualiza no banco de dados
             await prisma.user.update({
@@ -282,7 +358,19 @@ export class ChatService {
     }
 
     async getUserOnlineStatus(userId: string) {
-        const status = await redisClient.get(`user:${userId}:online`);
+        const status = await getRedisValue(`user:${userId}:online`);
+        if (status === null) {
+            // Fallback: buscar do banco de dados
+            try {
+                const user = await prisma.user.findUnique({
+                    where: { id: userId },
+                    select: { isOnline: true }
+                });
+                return user?.isOnline || false;
+            } catch (error) {
+                return false;
+            }
+        }
         return status === 'true';
     }
 
