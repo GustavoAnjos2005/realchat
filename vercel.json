@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "installCommand": "npm install && npx prisma generate",
+  "installCommand": "npm install && npx prisma generate && npx prisma db push",
   "functions": {
     "api/index.ts": {
       "runtime": "@vercel/node@3.0.0",
@@ -40,6 +40,8 @@
     }
   ],
   "env": {
-    "PRISMA_CLI_BINARY_TARGETS": "native,rhel-openssl-1.0.x"
+    "PRISMA_CLI_BINARY_TARGETS": "native,rhel-openssl-1.0.x",
+    "DATABASE_URL": "@database_url",
+    "JWT_SECRET": "@jwt_secret"
   }
 }
