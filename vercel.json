@@ -8,17 +8,14 @@
       "runtime": "@vercel/node@3.0.0"
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index.ts"
-    }
-  ],
-  "redirects": [
+      "src": "/api/(.*)",
+      "dest": "/api/index.ts"
+    },
     {
-      "source": "/((?!api|_next|_static|favicon.ico|assets).*)",
-      "destination": "/",
-      "permanent": false
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }

@@ -20,7 +20,7 @@ const allowedOrigins = [
   'http://127.0.0.1:3000',
   process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
   process.env.FRONTEND_URL || '',
-  'https://realchat-seven.vercel.app'
+  'https://realchat-xi.vercel.app'  // URL específica do seu projeto
 ].filter(Boolean);
 
 console.log('Origens permitidas pelo CORS:', allowedOrigins);
