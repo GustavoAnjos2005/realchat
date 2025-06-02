@@ -2,10 +2,11 @@
   "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "installCommand": "npm install",
+  "installCommand": "npm install && npx prisma generate",
   "functions": {
     "api/index.ts": {
-      "runtime": "@vercel/node@3.0.0"
+      "runtime": "@vercel/node@3.0.0",
+      "maxDuration": 30
     }
   },
   "rewrites": [
@@ -37,5 +38,8 @@
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "PRISMA_CLI_BINARY_TARGETS": "native,rhel-openssl-1.0.x"
+  }
 }

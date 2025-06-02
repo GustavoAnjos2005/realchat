@@ -11,6 +11,10 @@ const authService = new AuthService();
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
+// Log das configurações importantes
+console.log('JWT_SECRET configurado:', !!process.env.JWT_SECRET);
+console.log('DATABASE_URL configurado:', !!process.env.DATABASE_URL);
+
 // Configuração do multer para upload de imagens
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -42,10 +46,22 @@ const upload = multer({
 export class AuthController {
     async register(req: Request, res: Response) {
         try {
+            console.log('Tentativa de registro:', { email: req.body.email, name: req.body.name });
+            
             const { email, password, name } = req.body;
+
+            if (!email || !password || !name) {
+                console.log('Dados faltando no registro:', { email: !!email, password: !!password, name: !!name });
+                return res.status(400).json({ message: 'Email, senha e nome são obrigatórios' });
+            }
+
+            // Teste de conexão com o banco
+            await prisma.$connect();
+            console.log('Conexão com banco estabelecida');
 
             const existingUser = await prisma.user.findUnique({ where: { email } });
             if (existingUser) {
+                console.log('Email já existe:', email);
                 return res.status(400).json({ message: 'Email já cadastrado' });
             }
 
@@ -58,37 +74,65 @@ export class AuthController {
                 }
             });
 
+            console.log('Usuário criado com sucesso:', user.id);
+
             const token = jwt.sign({ userId: user.id }, JWT_SECRET);
 
             const { password: _, ...userWithoutPassword } = user;
             res.status(201).json({ user: userWithoutPassword, token });
         } catch (error) {
-            console.error('Erro ao registrar:', error);
-            res.status(500).json({ message: 'Erro ao criar conta' });
+            console.error('Erro detalhado ao registrar:', error);
+            console.error('Stack completo:', (error as Error).stack);
+            res.status(500).json({ 
+                message: 'Erro ao criar conta',
+                error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+            });
+        } finally {
+            await prisma.$disconnect();
         }
     }
 
     async login(req: Request, res: Response) {
         try {
+            console.log('Tentativa de login:', { email: req.body.email });
+            
             const { email, password } = req.body;
+
+            if (!email || !password) {
+                console.log('Dados faltando no login:', { email: !!email, password: !!password });
+                return res.status(400).json({ message: 'Email e senha são obrigatórios' });
+            }
+
+            // Teste de conexão com o banco
+            await prisma.$connect();
+            console.log('Conexão com banco estabelecida para login');
 
             const user = await prisma.user.findUnique({ where: { email } });
             if (!user) {
+                console.log('Usuário não encontrado:', email);
                 return res.status(401).json({ message: 'Email ou senha incorretos' });
             }
 
             const validPassword = await bcrypt.compare(password, user.password);
             if (!validPassword) {
+                console.log('Senha incorreta para:', email);
                 return res.status(401).json({ message: 'Email ou senha incorretos' });
             }
 
             const token = jwt.sign({ userId: user.id }, JWT_SECRET);
+            console.log('Login realizado com sucesso:', user.id);
 
             const { password: _, ...userWithoutPassword } = user;
             res.json({ user: userWithoutPassword, token });
         } catch (error) {
-            console.error('Erro ao fazer login:', error);
-            res.status(500).json({ message: 'Erro ao fazer login' });
+            console.error('Erro detalhado ao fazer login:', error);
+            console.error('Stack completo:', (error as Error).stack);
+            res.status(500).json({ 
+                message: 'Erro ao fazer login',
+                error: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+            });
+        } finally {
+            await prisma.$disconnect();
         }
     }
 

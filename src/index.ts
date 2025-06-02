@@ -24,6 +24,8 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 console.log('Origens permitidas pelo CORS:', allowedOrigins);
+console.log('DATABASE_URL configurado:', !!process.env.DATABASE_URL);
+console.log('JWT_SECRET configurado:', !!process.env.JWT_SECRET);
 
 // Configuração do Socket.IO
 const io = new Server(server, {
@@ -90,6 +92,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Servindo arquivos estáticos (ajustado para Vercel)
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
+// Middleware de log para todas as requisições
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  next();
+});
+
 // Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
@@ -99,7 +107,8 @@ app.get('/api/test', (req, res) => {
   res.json({ 
     message: 'Servidor funcionando!',
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    databaseConnected: !!process.env.DATABASE_URL
   });
 });
 
@@ -110,7 +119,24 @@ app.get('/api/health', (req, res) => {
 
 // Middleware para capturar rotas não encontradas
 app.use('/api/*', (req, res) => {
+  console.log('Rota não encontrada:', req.path);
   res.status(404).json({ error: 'Endpoint não encontrado' });
+});
+
+// Middleware global de tratamento de erros
+app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('Erro global capturado:', error);
+  console.error('Stack:', error.stack);
+  
+  // Se a resposta já foi enviada, passe para o próximo middleware
+  if (res.headersSent) {
+    return next(error);
+  }
+  
+  res.status(500).json({ 
+    message: 'Erro interno do servidor',
+    error: process.env.NODE_ENV === 'development' ? error.message : undefined
+  });
 });
 
 // Apenas para desenvolvimento local

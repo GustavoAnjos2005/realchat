@@ -12,7 +12,8 @@
     "build": "tsc",
     "build:backend": "tsc",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "vercel-build": "cd frontend && npm install && npm run build"
+    "vercel-build": "cd frontend && npm install && npm run build",
+    "postinstall": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
