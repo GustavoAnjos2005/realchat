@@ -110,28 +110,26 @@ export class ChatService {
     private async ensureAIUser() {
         try {
             console.log('Verificando se usuário AI existe...');
-            const aiUser = await prisma.user.findUnique({
-                where: { id: this.AI_USER_ID }
+            
+            // Usar upsert para criar ou atualizar o usuário AI
+            const aiUser = await prisma.user.upsert({
+                where: { id: this.AI_USER_ID },
+                update: {
+                    isOnline: true // Garante que está online
+                },
+                create: {
+                    id: this.AI_USER_ID,
+                    name: this.AI_USER_NAME,
+                    email: this.AI_USER_EMAIL,
+                    password: 'ai-user-no-login',
+                    isOnline: true
+                }
             });
-
-            if (!aiUser) {
-                console.log('Usuário AI não encontrado, criando...');
-                await prisma.user.create({
-                    data: {
-                        id: this.AI_USER_ID,
-                        name: this.AI_USER_NAME,
-                        email: this.AI_USER_EMAIL,
-                        password: 'ai-user-no-login',
-                        isOnline: true
-                    }
-                });
-                console.log('Usuário AI criado com sucesso');
-            } else {
-                console.log('Usuário AI já existe');
-            }
+            
+            console.log('Usuário AI configurado com sucesso:', aiUser.name);
         } catch (error) {
             console.error('Erro ao garantir usuário AI:', error);
-            throw error;
+            // Não relança o erro para não quebrar a aplicação
         }
     }
 
