@@ -40,8 +40,6 @@
     }
   ],
   "env": {
-    "PRISMA_CLI_BINARY_TARGETS": "native,rhel-openssl-1.0.x",
-    "DATABASE_URL": "@database_url",
-    "JWT_SECRET": "@jwt_secret"
+    "PRISMA_CLI_BINARY_TARGETS": "native,rhel-openssl-1.0.x"
   }
 }
