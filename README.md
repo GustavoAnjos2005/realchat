@@ -1,78 +1,86 @@
-# Chat em Tempo Real com IA
+# RealChat
 
-Uma aplicação de chat em tempo real com suporte a conversas entre usuários e um assistente de IA.
+Full-stack real-time chat application with AI assistant, built using Node.js, React, TypeScript, Tailwind CSS, Prisma (PostgreSQL), and Redis. Features user authentication, online status, message history, typing indicators, and a modern responsive interface. Includes an AI assistant for automatic replies.
 
-## Tecnologias Utilizadas
+---
 
-### Backend
+## Project Summary
+
+RealChat is a real-time chat platform where users can communicate instantly, see who is online, and interact with an AI assistant for smart replies. The project features a modern UI, secure authentication, and scalable backend, making it ideal for learning or as a foundation for more advanced chat solutions.
+
+---
+
+## Stack
+
 - Node.js
-- TypeScript
 - Express
+- TypeScript
+- React
+- Vite
+- Tailwind CSS
 - Socket.IO
 - Prisma (PostgreSQL)
 - Redis
-- JWT para autenticação
+- JWT Authentication
 
-### Frontend
-- React
-- TypeScript
-- Vite
-- TailwindCSS
-- Socket.IO Client
+---
 
-## Funcionalidades
+## Features
 
-- Autenticação de usuários (login/registro)
-- Chat em tempo real entre usuários
-- Indicador de usuários online
-- Histórico de mensagens
-- Assistente de IA para respostas automáticas
-- Indicador de digitação
-- Interface responsiva e moderna
+- User authentication (login/register)
+- Real-time chat between users
+- Online user indicator
+- Message history
+- AI assistant for automatic replies
+- Typing indicator
+- Responsive and modern interface
 
-## Configuração
+---
 
-1. Clone o repositório
-```bash
-git clone https://github.com/GustavoAnjos2005/realchat.git
-cd realchat
-```
+## Getting Started
 
-2. Instale as dependências (backend e frontend)
-```bash
-# Backend
-npm install
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/GustavoAnjos2005/realchat.git
+   cd realchat
+   ```
+2. **Install dependencies**
+   ```bash
+   # Backend
+   npm install
 
-# Frontend
-cd frontend
-npm install
-```
+   # Frontend
+   cd frontend
+   npm install
+   ```
+3. **Configure environment variables**
+   - Copy `.env.example` to `.env` and fill in your values
+4. **Setup the database**
+   ```bash
+   npx prisma migrate dev
+   ```
+5. **Start the services**
+   ```bash
+   # Backend
+   npm run dev
 
-3. Configure as variáveis de ambiente
-- Copie o arquivo `.env.example` para `.env`
-- Preencha as variáveis com seus valores
+   # Frontend (in another terminal)
+   cd frontend
+   npm run dev
+   ```
 
-4. Configure o banco de dados
-```bash
-npx prisma migrate dev
-```
+---
 
-5. Inicie os serviços
-```bash
-# Backend
-npm run dev
+## Environment Variables
 
-# Frontend (em outro terminal)
-cd frontend
-npm run dev
-```
+- `DATABASE_URL`: PostgreSQL connection string
+- `JWT_SECRET`: Secret key for JWT tokens
+- `REDIS_URL`: Redis connection string
+- `PORT`: Server port (default: 3000)
+- `HUGGINGFACE_TOKEN`: Hugging Face API token (optional)
 
-## Variáveis de Ambiente
+---
 
-O projeto requer as seguintes variáveis de ambiente:
+## Screenshots
 
-- `DATABASE_URL`: URL de conexão com o PostgreSQL
-- `JWT_SECRET`: Chave secreta para geração de tokens JWT
-- `REDIS_URL`: URL de conexão com o Redis
-- `PORT`: Porta do servidor (padrão: 3000)
-- `HUGGINGFACE_TOKEN`: Token da API do Hugging Face (opcional)
+<!-- Add your screenshots here if desired -->
