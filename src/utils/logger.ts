@@ -1,37 +1,33 @@
-import winston from 'winston';
-import path from 'path';
-import fs from 'fs';
+// Logger adaptado para ambientes serverless (Vercel)
+// Em produção/Vercel, use apenas console.log/error
 
-// Garante que a pasta logs existe
-const logsDir = path.join(__dirname, '../../logs');
-if (!fs.existsSync(logsDir)) {
-    fs.mkdirSync(logsDir, { recursive: true });
-}
+const isVercel = !!process.env.VERCEL || process.env.NODE_ENV === 'production';
 
-const logger = winston.createLogger({
-    level: 'info',
-    format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-    ),
-    transports: [
-        // Salva logs de erro em error.log
-        new winston.transports.File({ 
-            filename: path.join(logsDir, 'error.log'), 
-            level: 'error' 
-        }),
-        // Salva todos os logs em combined.log
-        new winston.transports.File({ 
-            filename: path.join(logsDir, 'combined.log')
-        }),
-        // Mostra logs no console também
-        new winston.transports.Console({
-            format: winston.format.combine(
-                winston.format.colorize(),
-                winston.format.simple()
-            )
-        })
-    ]
-});
+const logger = {
+  info: (...args: any[]) => {
+    if (isVercel) {
+      console.log('[INFO]', ...args);
+    } else {
+      // Salva logs de info em combined.log
+      winston.log('info', ...args);
+    }
+  },
+  error: (...args: any[]) => {
+    if (isVercel) {
+      console.error('[ERROR]', ...args);
+    } else {
+      // Salva logs de erro em error.log
+      winston.log('error', ...args);
+    }
+  },
+  warn: (...args: any[]) => {
+    if (isVercel) {
+      console.warn('[WARN]', ...args);
+    } else {
+      // Salva logs de aviso em combined.log
+      winston.log('warn', ...args);
+    }
+  }
+};
 
 export default logger;
