@@ -1,9 +1,16 @@
 import type { Socket } from 'socket.io-client';
 
+// Corrige o tipo de 'type' em SignalData para ser compatível com RTCSessionDescriptionInit
+export interface SignalData extends RTCSessionDescriptionInit {
+  candidate?: string;
+  sdpMLineIndex?: number;
+  sdpMid?: string;
+}
+
 export interface CallData {
   from: string;
   to: string;
-  signal: any;
+  signal: SignalData;
   type: 'audio' | 'video';
 }
 
@@ -57,7 +64,7 @@ export class WebRTCService {
       this.onIncomingCall?.(data);
     });
 
-    this.socket.on('call-accepted', async (data: { signal: any }) => {
+    this.socket.on('call-accepted', async (data: { signal: SignalData }) => {
       console.log('✅ Chamada aceita, processando sinal:', data);
       if (this.peerConnection && data.signal) {
         try {
@@ -92,7 +99,7 @@ export class WebRTCService {
       this.onCallEnded?.();
     });
 
-    this.socket.on('ice-candidate', async (candidate: any) => {
+    this.socket.on('ice-candidate', async (candidate: SignalData) => {
       console.log('🧊 ICE candidate recebido:', candidate);
       await this.addIceCandidate(candidate);
     });
@@ -104,7 +111,7 @@ export class WebRTCService {
     });
   }
 
-  private async addIceCandidate(candidate: any) {
+  private async addIceCandidate(candidate: SignalData) {
     if (!this.peerConnection) {
       console.warn('⚠️ Tentativa de adicionar ICE candidate sem peer connection');
       return;
@@ -904,5 +911,14 @@ export class WebRTCService {
     console.log('📊 === FIM DO ESTADO DETALHADO ===');
   }
 }
+
+// Função para obter a URL do socket dinamicamente
+export const getSocketUrl = () => {
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    return 'http://localhost:3000';
+  }
+  // Use a URL do backend do Vercel em produção
+  return 'https://realtime-chat-zeta-gray.vercel.app';
+};
 
 export default WebRTCService;
