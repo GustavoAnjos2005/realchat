@@ -189,20 +189,8 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
 // Configuração para desenvolvimento local
 if (!isVercel && !isProduction) {
   const PORT = process.env.PORT || 3000;
-  const server = app.listen(PORT, () => {
-    logger.info(`🚀 Servidor rodando na porta ${PORT}`);
-    logger.info(`🌐 URL: http://localhost:${PORT}`);
-    if (io) {
-      logger.info(`🔌 Socket.IO ativo`);
-    }
-  });
-  
-  // Graceful shutdown
-  process.on('SIGTERM', () => {
-    console.log('🛑 SIGTERM recebido, encerrando servidor...');
-    server.close(() => {
-      console.log('✅ Servidor encerrado');
-    });
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
   });
 }
 
