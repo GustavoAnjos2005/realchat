@@ -13,17 +13,9 @@ import { MessageCircle, Settings, LogOut, Send, ChevronDown, Search, Phone, Vide
 import './Chat.css';
 import { getSocketUrl } from '../services/webrtcService';
 
+// Todos os hooks devem vir antes de qualquer return ou if!
 export default function Chat() {
   const { user, logout } = useAuth();
-
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500">Carregando...</p>
-      </div>
-    );
-  }
-
   const [messages, setMessages] = useState<Message[]>([]);
   const [messageContent, setMessageContent] = useState('');
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
@@ -35,7 +27,7 @@ export default function Chat() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-
+  
   // State para upload de arquivo e emojis
   const [isFileUploadOpen, setIsFileUploadOpen] = useState(false);
   const [isEmojiSelectorOpen, setIsEmojiSelectorOpen] = useState(false);
@@ -159,7 +151,7 @@ export default function Chat() {
       }
       socketRef.current?.disconnect();
     };
-  }, [user.id]);
+  }, [user]);
 
   // useEffect separado para eventos de typing
   useEffect(() => {
@@ -325,9 +317,9 @@ export default function Chat() {
       socketRef.current.emit('sendMessage', {
         receiverId: selectedUser.id,
         content: content
-      }, (error: any) => {
-        if (error) {
-          toast.error('Erro ao enviar mensagem: ' + error.message);
+      }, (error: unknown) => {
+        if (error && typeof error === 'object' && error !== null && 'message' in error) {
+          toast.error('Erro ao enviar mensagem: ' + (error as { message: string }).message);
           setMessageContent(content);
         }
         setIsSending(false);
@@ -537,7 +529,7 @@ export default function Chat() {
   const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage(e as any);
+      handleSendMessage(e);
     }
   };
 
@@ -546,6 +538,14 @@ export default function Chat() {
     target.style.height = 'auto';
     target.style.height = Math.min(target.scrollHeight, 120) + 'px';
   };
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-500">Carregando...</p>
+      </div>
+    );
+  }
 
   return (
     <div className={`chat-container h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex overflow-hidden ${user.backgroundColor ? `bg-${user.backgroundColor}` : ''} ${user.themeColor ? `theme-${user.themeColor}` : ''}`}>
