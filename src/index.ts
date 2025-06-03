@@ -35,8 +35,9 @@ const allowedOrigins = [
 
 // Configuração do Socket.IO apenas se não estiver no Vercel
 let io: Server | undefined;
+let server: any;
 if (!isVercel) {
-  const server = createServer(app);
+  server = createServer(app);
   io = new Server(server, {
     cors: {
       origin: allowedOrigins,
@@ -143,10 +144,10 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// Configuração para desenvolvimento local
+// Configuração para desenvolvimento local e produção (exceto Vercel)
 if (!isVercel) {
   const PORT = Number(process.env.PORT) || 3000;
-  app.listen(PORT, '0.0.0.0', () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
 }
