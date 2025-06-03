@@ -11,6 +11,7 @@ import type { Message, User } from '../types/chat';
 import { toast } from 'react-toastify';
 import { MessageCircle, Settings, LogOut, Send, ChevronDown, Search, Phone, Video, Smile, Paperclip, Download, FileText } from 'lucide-react';
 import './Chat.css';
+import { getSocketUrl } from '../services/webrtcService';
 
 export default function Chat() {
   const { user, logout } = useAuth();
@@ -67,7 +68,7 @@ export default function Chat() {
     if (!token) return undefined;
 
     console.log('Iniciando conexão socket...');
-    socketRef.current = socketIOClient('http://localhost:3000', {
+    socketRef.current = socketIOClient(getSocketUrl(), {
       auth: { token }
     });
 
