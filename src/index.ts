@@ -50,43 +50,15 @@ if (!isVercel) {
   console.log('✅ Socket.IO configurado para desenvolvimento');
 }
 
-// Configuração do CORS
+// CORS deve ser o PRIMEIRO middleware
 app.use(cors({
   origin: function (origin, callback) {
-    console.log('🌐 Requisição de origem:', origin);
-    
-    // Permitir requisições sem origin (aplicativos móveis, Postman, etc.)
-    if (!origin) {
-      console.log('✅ Permitindo requisição sem origin');
-      return callback(null, true);
-    }
-    
-    if (allowedOrigins.includes(origin)) {
-      console.log('✅ Origem permitida:', origin);
-      callback(null, true);
-    } else {
-      console.log('❌ Origem bloqueada pelo CORS:', origin);
-      console.log('📋 Origens permitidas:', allowedOrigins);
-      callback(new Error('Not allowed by CORS'));
-    }
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));
-
-// Ajuste dos headers adicionais para CORS
-app.use((req, res, next) => {
-  if (allowedOrigins.includes(req.headers.origin)) {
-    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-  }
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-    return;
-  }
-  next();
-});
 
 // Middleware de parsing
 app.use(express.json({ limit: '10mb' }));
