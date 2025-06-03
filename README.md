@@ -81,6 +81,7 @@ RealChat is a real-time chat platform where users can communicate instantly, see
 
 ---
 
-## Screenshots
-
-<!-- Add your screenshots here if desired -->
+![chat1](https://github.com/user-attachments/assets/11fdb099-edc5-4e23-a3d3-c0b191e977d9)
+![chat2](https://github.com/user-attachments/assets/82aa9658-0aee-4c9e-9dce-2dd17a9aa412)
+![chat3](https://github.com/user-attachments/assets/5e91cef7-6570-4e44-85f0-1c26340723cd)
+![chat4](https://github.com/user-attachments/assets/5a1b0eb6-857c-4a83-ae22-2cf71febadc7)
