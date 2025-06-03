@@ -917,8 +917,8 @@ export const getSocketUrl = () => {
   if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
     return 'http://localhost:3000';
   }
-  // Use a URL do backend do Vercel em produção
-  return 'https://realtime-chat-zeta-gray.vercel.app';
+  // URL do backend Railway em produção
+  return 'https://realchat-production.up.railway.app';
 };
 
 export default WebRTCService;

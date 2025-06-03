@@ -1,39 +1,33 @@
 import axios from 'axios';
 
-// Configuração da URL base baseada no ambiente
-const getBaseURL = () => {
-    if (typeof window !== 'undefined') {
-        // No browser, usar URL relativa para produção ou localhost para desenvolvimento
-        return window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000'
-            : `${window.location.protocol}//${window.location.host}`;
-    }
-    return 'http://localhost:3000';
-};
+const API_BASE_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : 'https://realchat-production.up.railway.app';
 
-const api = axios.create({
-    baseURL: getBaseURL(),
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    withCredentials: true
+export const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  withCredentials: true
 });
 
 // Interceptor para adicionar o token em todas as requisições
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // Função utilitária para construir URLs de imagens de perfil
 export const getProfileImageUrl = (profileImage?: string) => {
-    if (!profileImage) return '/default-avatar.svg';
-    if (profileImage.startsWith('http')) return profileImage;
-    const baseURL = getBaseURL();
-    return `${baseURL}${profileImage}`;
+  if (!profileImage) return '/default-avatar.svg';
+  if (profileImage.startsWith('http')) return profileImage;
+  const baseURL = API_BASE_URL;
+  return `${baseURL}${profileImage}`;
 };
 
 export default api;
