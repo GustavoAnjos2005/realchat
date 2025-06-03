@@ -187,7 +187,7 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
 });
 
 // Configuração para desenvolvimento local
-if (!isVercel && !isProduction) {
+if (!isVercel) {
   const PORT = Number(process.env.PORT) || 3000;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Servidor rodando na porta ${PORT}`);
