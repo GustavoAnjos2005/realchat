@@ -30,11 +30,8 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://127.0.0.1:3000',
   'https://realchat-xi.vercel.app',
-  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
-  process.env.FRONTEND_URL || ''
-].filter(Boolean);
-
-console.log('Origens permitidas pelo CORS:', allowedOrigins);
+  'https://realtime-chat-zeta-gray.vercel.app'
+];
 
 // Configuração do Socket.IO apenas se não estiver no Vercel
 let io: Server | undefined;
@@ -64,39 +61,27 @@ app.use(cors({
       return callback(null, true);
     }
     
-    if (allowedOrigins.some(allowed => origin.includes(allowed.replace('https://', '').replace('http://', '')))) {
+    if (allowedOrigins.includes(origin)) {
       console.log('✅ Origem permitida:', origin);
       callback(null, true);
     } else {
       console.log('❌ Origem bloqueada pelo CORS:', origin);
       console.log('📋 Origens permitidas:', allowedOrigins);
-      callback(null, true); // Temporariamente permitir todas as origens para debug
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: [
-    'Origin',
-    'X-Requested-With',
-    'Content-Type',
-    'Accept',
-    'Authorization',
-    'Cache-Control',
-    'Pragma'
-  ],
-  credentials: true,
-  optionsSuccessStatus: 200
+  credentials: true
 }));
 
-// Headers adicionais para CORS
+// Ajuste dos headers adicionais para CORS
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Temporário para debug
+  if (allowedOrigins.includes(req.headers.origin)) {
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  }
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma');
-  
-  // Responder a requisições OPTIONS (preflight)
   if (req.method === 'OPTIONS') {
-    console.log('🔄 Respondendo a requisição OPTIONS');
     res.sendStatus(200);
     return;
   }
